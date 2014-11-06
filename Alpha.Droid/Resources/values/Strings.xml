@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="Hello">Hello World, Click Me!</string>
+    <string name="ApplicationName">Alpha.Droid</string>
+	
+	<string name="fragment_context_menu_msg">Fragment populating a context menu; long press the button to see.</string>
+	<string name="long_press">Long press me</string>
+
+	<string name="username">User ID</string>
+	<string name="password">Password</string>
+</resources>
+

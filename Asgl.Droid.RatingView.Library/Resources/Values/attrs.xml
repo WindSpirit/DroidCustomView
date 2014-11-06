@@ -1,0 +1,13 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<resources>
+	<declare-styleable name="RatingView">
+		<!-- 2 to 5 point scaling system -->
+		<attr name="scale" format="integer" min="2" max="5"/>
+		<!-- -1 is unselected, 0 thru to 4 for scaling points -->
+		<attr name="rating" format="integer" min="-1" max="4"/>
+		<attr name="readOnly" format="boolean"/>
+		<!-- Requires correction indicator -->
+		<attr name="requiresCorrection" format="boolean"/>
+	</declare-styleable>
+</resources>
+

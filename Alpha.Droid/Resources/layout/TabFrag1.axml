@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:local="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent">
+<!--
+	<Asgl.Android.Views.RatingView
+        android:id="@+id/rating"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        local:scale="3"
+        local:rating="2"
+        local:MvxBind="rating Rating; scale Scale" />
+	-->
+    <Mvx.MvxListView
+        android:id="@+id/section_list"
+        android:layout_height="wrap_content"
+        android:layout_width="fill_parent"
+        local:MvxBind="ItemsSource Listing"
+        local:MvxItemTemplate="@layout/tabfrag1_item" />
+</LinearLayout>
