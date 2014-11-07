@@ -105,32 +105,29 @@ namespace Asgl.Droid.RatingView.Library
 		public partial class Id
 		{
 			
-			// aapt resource value: 0x7f060007
-			public static int not_applicable = 2131099655;
-			
-			// aapt resource value: 0x7f060002
-			public static int rating0 = 2131099650;
-			
-			// aapt resource value: 0x7f060003
-			public static int rating1 = 2131099651;
-			
-			// aapt resource value: 0x7f060004
-			public static int rating2 = 2131099652;
-			
-			// aapt resource value: 0x7f060005
-			public static int rating3 = 2131099653;
-			
 			// aapt resource value: 0x7f060006
-			public static int rating4 = 2131099654;
-			
-			// aapt resource value: 0x7f060008
-			public static int req_correction = 2131099656;
+			public static int not_applicable = 2131099654;
 			
 			// aapt resource value: 0x7f060001
-			public static int rvRow = 2131099649;
+			public static int rating0 = 2131099649;
+			
+			// aapt resource value: 0x7f060002
+			public static int rating1 = 2131099650;
+			
+			// aapt resource value: 0x7f060003
+			public static int rating2 = 2131099651;
+			
+			// aapt resource value: 0x7f060004
+			public static int rating3 = 2131099652;
+			
+			// aapt resource value: 0x7f060005
+			public static int rating4 = 2131099653;
+			
+			// aapt resource value: 0x7f060007
+			public static int req_correction = 2131099655;
 			
 			// aapt resource value: 0x7f060000
-			public static int rvTable = 2131099648;
+			public static int rvRow = 2131099648;
 			
 			static Id()
 			{

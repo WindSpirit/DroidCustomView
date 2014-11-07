@@ -47,7 +47,6 @@ namespace Alpha.Droid
 			global::Asgl.Droid.RatingView.Library.Resource.Id.rating4 = global::Alpha.Droid.Resource.Id.rating4;
 			global::Asgl.Droid.RatingView.Library.Resource.Id.req_correction = global::Alpha.Droid.Resource.Id.req_correction;
 			global::Asgl.Droid.RatingView.Library.Resource.Id.rvRow = global::Alpha.Droid.Resource.Id.rvRow;
-			global::Asgl.Droid.RatingView.Library.Resource.Id.rvTable = global::Alpha.Droid.Resource.Id.rvTable;
 			global::Asgl.Droid.RatingView.Library.Resource.Layout.angus_rating_view = global::Alpha.Droid.Resource.Layout.angus_rating_view;
 			global::Asgl.Droid.RatingView.Library.Resource.String.ApplicationName = global::Alpha.Droid.Resource.String.ApplicationName;
 			global::Asgl.Droid.RatingView.Library.Resource.String.Hello = global::Alpha.Droid.Resource.String.Hello;
@@ -1027,8 +1026,8 @@ namespace Alpha.Droid
 			// aapt resource value: 0x7f05001a
 			public const int disableHome = 2131034138;
 			
-			// aapt resource value: 0x7f050057
-			public const int drawer_layout = 2131034199;
+			// aapt resource value: 0x7f050056
+			public const int drawer_layout = 2131034198;
 			
 			// aapt resource value: 0x7f050021
 			public const int dropdown = 2131034145;
@@ -1054,8 +1053,8 @@ namespace Alpha.Droid
 			// aapt resource value: 0x7f050009
 			public const int fill_vertical = 2131034121;
 			
-			// aapt resource value: 0x7f050058
-			public const int fragment_container = 2131034200;
+			// aapt resource value: 0x7f050057
+			public const int fragment_container = 2131034199;
 			
 			// aapt resource value: 0x7f050025
 			public const int home = 2131034149;
@@ -1096,8 +1095,8 @@ namespace Alpha.Droid
 			// aapt resource value: 0x7f050012
 			public const int normal = 2131034130;
 			
-			// aapt resource value: 0x7f050055
-			public const int not_applicable = 2131034197;
+			// aapt resource value: 0x7f050054
+			public const int not_applicable = 2131034196;
 			
 			// aapt resource value: 0x7f050029
 			public const int progress_circular = 2131034153;
@@ -1108,35 +1107,32 @@ namespace Alpha.Droid
 			// aapt resource value: 0x7f050041
 			public const int radio = 2131034177;
 			
-			// aapt resource value: 0x7f05005b
-			public const int rating = 2131034203;
+			// aapt resource value: 0x7f05005a
+			public const int rating = 2131034202;
+			
+			// aapt resource value: 0x7f05004f
+			public const int rating0 = 2131034191;
 			
 			// aapt resource value: 0x7f050050
-			public const int rating0 = 2131034192;
+			public const int rating1 = 2131034192;
 			
 			// aapt resource value: 0x7f050051
-			public const int rating1 = 2131034193;
+			public const int rating2 = 2131034193;
 			
 			// aapt resource value: 0x7f050052
-			public const int rating2 = 2131034194;
+			public const int rating3 = 2131034194;
 			
 			// aapt resource value: 0x7f050053
-			public const int rating3 = 2131034195;
+			public const int rating4 = 2131034195;
 			
-			// aapt resource value: 0x7f050054
-			public const int rating4 = 2131034196;
-			
-			// aapt resource value: 0x7f050056
-			public const int req_correction = 2131034198;
+			// aapt resource value: 0x7f050055
+			public const int req_correction = 2131034197;
 			
 			// aapt resource value: 0x7f050007
 			public const int right = 2131034119;
 			
-			// aapt resource value: 0x7f05004f
-			public const int rvRow = 2131034191;
-			
 			// aapt resource value: 0x7f05004e
-			public const int rvTable = 2131034190;
+			public const int rvRow = 2131034190;
 			
 			// aapt resource value: 0x7f050044
 			public const int search_badge = 2131034180;
@@ -1168,8 +1164,8 @@ namespace Alpha.Droid
 			// aapt resource value: 0x7f05004d
 			public const int search_voice_btn = 2131034189;
 			
-			// aapt resource value: 0x7f050059
-			public const int section_list = 2131034201;
+			// aapt resource value: 0x7f050058
+			public const int section_list = 2131034200;
 			
 			// aapt resource value: 0x7f050040
 			public const int shortcut = 2131034176;
@@ -1195,8 +1191,8 @@ namespace Alpha.Droid
 			// aapt resource value: 0x7f050014
 			public const int tabMode = 2131034132;
 			
-			// aapt resource value: 0x7f05005a
-			public const int task_description = 2131034202;
+			// aapt resource value: 0x7f050059
+			public const int task_description = 2131034201;
 			
 			// aapt resource value: 0x7f05003d
 			public const int title = 2131034173;
@@ -1324,22 +1320,19 @@ namespace Alpha.Droid
 			public const int angus_rating_view = 2130903064;
 			
 			// aapt resource value: 0x7f030019
-			public const int firstview = 2130903065;
+			public const int Main = 2130903065;
 			
 			// aapt resource value: 0x7f03001a
-			public const int Main = 2130903066;
+			public const int SplashScreen = 2130903066;
 			
 			// aapt resource value: 0x7f03001b
-			public const int SplashScreen = 2130903067;
+			public const int support_simple_spinner_dropdown_item = 2130903067;
 			
 			// aapt resource value: 0x7f03001c
-			public const int support_simple_spinner_dropdown_item = 2130903068;
+			public const int TabFrag1 = 2130903068;
 			
 			// aapt resource value: 0x7f03001d
-			public const int TabFrag1 = 2130903069;
-			
-			// aapt resource value: 0x7f03001e
-			public const int tabfrag1_item = 2130903070;
+			public const int tabfrag1_item = 2130903069;
 			
 			static Layout()
 			{

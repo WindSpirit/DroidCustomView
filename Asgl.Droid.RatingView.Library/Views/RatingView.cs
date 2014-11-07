@@ -29,10 +29,7 @@ namespace Asgl.Android.Views {
 		private const int MinimumRating = 0;
 		private const int TwoPointScale = 2;
 
-		private int? _scale = null;
-		private int? _rating = null;
-
-		private bool _isUpdating = false;
+		protected View GroupView;
 
 		protected ImageView Rating0 = null;
 		protected ImageView Rating1 = null;
@@ -53,6 +50,8 @@ namespace Asgl.Android.Views {
 		protected Color ColourBad;
 		protected Color ColourImportant;
 		protected Color ColourNotImportant;
+
+		private bool _isUpdating = false;
 
 		protected RatingView ( IntPtr javaReference, JniHandleOwnership transfer )
 			: base ( javaReference, transfer ) {
@@ -85,15 +84,18 @@ namespace Asgl.Android.Views {
 
 		public void OnCreateView ( ) {
 
-			var rootView = Inflate ( Context, Resource.Layout.angus_rating_view, this );
+			GroupView = Inflate ( Context, Resource.Layout.angus_rating_view, this );
 
-			this.AlwaysDrawnWithCacheEnabled = false;
+			// AlwaysDrawnWithCacheEnabled = false; // Uncomment this if you want Draw events
 
 			InitColour ( );
 			InitDrawables ( );
-			InitControls ( rootView );
+			InitControls ( GroupView );
+
+			SetClickListener(this);
 		}
 
+		private int? _rating = null;
 		public int? Rating {
 			get
 			{
@@ -120,6 +122,7 @@ namespace Asgl.Android.Views {
 		}
 		public event EventHandler RatingChanged;
 
+		private int? _scale = null;
 		public int? Scale {
 			get { return _scale; }
 			set {
@@ -174,28 +177,25 @@ namespace Asgl.Android.Views {
 			ActnNotImportant = Resources.GetDrawable ( Resource.Drawable.ic_action_not_important );
 		}
 
+		protected void SetClickListener ( View.IOnClickListener listner ) {
+			// Passing in null will clear listners
+			Rating0.SetOnClickListener ( listner );
+			Rating1.SetOnClickListener ( listner );
+			Rating2.SetOnClickListener ( listner );
+			Rating3.SetOnClickListener ( listner );
+			Rating4.SetOnClickListener ( listner );
+			NotApplicable.SetOnClickListener ( listner );
+			CorrectionNeeded.SetOnClickListener ( listner );
+		}
+
 		protected void InitControls ( View rootView ) {
-
 			Rating0 = rootView.FindViewById<ImageView> ( Resource.Id.rating0 );
-			Rating0.SetOnClickListener ( this );
-
 			Rating1 = rootView.FindViewById<ImageView> ( Resource.Id.rating1 );
-			Rating1.SetOnClickListener ( this );
-
 			Rating2 = rootView.FindViewById<ImageView> ( Resource.Id.rating2 );
-			Rating2.SetOnClickListener ( this );
-
 			Rating3 = rootView.FindViewById<ImageView> ( Resource.Id.rating3 );
-			Rating3.SetOnClickListener ( this );
-
 			Rating4 = rootView.FindViewById<ImageView> ( Resource.Id.rating4 );
-			Rating4.SetOnClickListener ( this );
-
 			NotApplicable = rootView.FindViewById<TextView> ( Resource.Id.not_applicable );
-			NotApplicable.SetOnClickListener ( this );
-
 			CorrectionNeeded = rootView.FindViewById<ImageView> ( Resource.Id.req_correction );
-			CorrectionNeeded.SetOnClickListener ( this );
 		}
 
 		protected void SetVisibility ( )
@@ -210,14 +210,19 @@ namespace Asgl.Android.Views {
 
 		#endregion
 
-		protected void ClearImages()
+		protected override bool DrawChild(Canvas canvas, View child, long drawingTime)
 		{
-			// Clears previously set images
-			Rating0.SetImageDrawable ( null );
-			Rating1.SetImageDrawable ( null );
-			Rating2.SetImageDrawable ( null );
-			Rating3.SetImageDrawable ( null );
-			Rating4.SetImageDrawable ( null );
+			// Not sure where the "child" came from, but we need to update it
+			// to reflect the information and states in "this" View instance.
+
+			// Establish references to the Views that we want to update
+			InitControls(child);
+
+			// Update those Views
+			Refresh();
+
+			// Let DrawChild do its thing now that we have sync'd the GroupView's
+			return base.DrawChild(canvas, child, drawingTime);
 		}
 
 		protected void Refresh ( )
@@ -228,7 +233,6 @@ namespace Asgl.Android.Views {
 			// If you don't know the scale, you don't know what to render
 			if (Scale != null)
 			{
-				var testRating = Rating ?? (MinimumRating - 1);
 				if (Rating < MinimumRating)
 				{
 					// Rating has not been established yet
@@ -295,20 +299,20 @@ namespace Asgl.Android.Views {
 			// }
 		}
 
+		protected void ClearImages ( ) {
+			// Clears previously set images
+			Rating0.SetImageDrawable ( null );
+			Rating1.SetImageDrawable ( null );
+			Rating2.SetImageDrawable ( null );
+			Rating3.SetImageDrawable ( null );
+			Rating4.SetImageDrawable ( null );
+		}
+
 		void IDisposable.Dispose()
 		{
 			ClearImages();
-
-			// Remove listeners
-			Rating0.SetOnClickListener ( null );
-			Rating1.SetOnClickListener ( null );
-			Rating2.SetOnClickListener ( null );
-			Rating3.SetOnClickListener ( this );
-			Rating4.SetOnClickListener ( this );
-			NotApplicable.SetOnClickListener ( null );
-			CorrectionNeeded.SetOnClickListener ( null );
-
-			Dispose ( );
+			SetClickListener(null);
+			Dispose();
 		}
 
 	}
