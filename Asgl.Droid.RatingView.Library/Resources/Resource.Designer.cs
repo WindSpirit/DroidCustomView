@@ -27,14 +27,20 @@ namespace Asgl.Droid.RatingView.Library
 		public partial class Attribute
 		{
 			
+			// aapt resource value: 0x7f010003
+			public static int notApplicable = 2130771971;
+			
 			// aapt resource value: 0x7f010001
 			public static int rating = 2130771969;
 			
 			// aapt resource value: 0x7f010002
 			public static int readOnly = 2130771970;
 			
-			// aapt resource value: 0x7f010003
-			public static int requiresCorrection = 2130771971;
+			// aapt resource value: 0x7f010005
+			public static int requiresCorrection = 2130771973;
+			
+			// aapt resource value: 0x7f010004
+			public static int requiresCorrectionVisible = 2130771972;
 			
 			// aapt resource value: 0x7f010000
 			public static int scale = 2130771968;
@@ -52,6 +58,9 @@ namespace Asgl.Droid.RatingView.Library
 		public partial class Color
 		{
 			
+			// aapt resource value: 0x7f040005
+			public static int black = 2130968581;
+			
 			// aapt resource value: 0x7f040001
 			public static int colourBad = 2130968577;
 			
@@ -66,6 +75,9 @@ namespace Asgl.Droid.RatingView.Library
 			
 			// aapt resource value: 0x7f040004
 			public static int colourNotImportant = 2130968580;
+			
+			// aapt resource value: 0x7f040006
+			public static int red = 2130968582;
 			
 			static Color()
 			{
@@ -91,6 +103,18 @@ namespace Asgl.Droid.RatingView.Library
 			
 			// aapt resource value: 0x7f020003
 			public static int ic_action_not_important = 2130837507;
+			
+			// aapt resource value: 0x7f020004
+			public static int ic_is_checked = 2130837508;
+			
+			// aapt resource value: 0x7f020005
+			public static int ic_not_applicable = 2130837509;
+			
+			// aapt resource value: 0x7f020006
+			public static int ic_not_checked = 2130837510;
+			
+			// aapt resource value: 0x7f020007
+			public static int oval_background = 2130837511;
 			
 			static Drawable()
 			{
@@ -181,7 +205,12 @@ namespace Asgl.Droid.RatingView.Library
 					2130771968,
 					2130771969,
 					2130771970,
-					2130771971};
+					2130771971,
+					2130771972,
+					2130771973};
+			
+			// aapt resource value: 3
+			public static int RatingView_notApplicable = 3;
 			
 			// aapt resource value: 1
 			public static int RatingView_rating = 1;
@@ -189,8 +218,11 @@ namespace Asgl.Droid.RatingView.Library
 			// aapt resource value: 2
 			public static int RatingView_readOnly = 2;
 			
-			// aapt resource value: 3
-			public static int RatingView_requiresCorrection = 3;
+			// aapt resource value: 5
+			public static int RatingView_requiresCorrection = 5;
+			
+			// aapt resource value: 4
+			public static int RatingView_requiresCorrectionVisible = 4;
 			
 			// aapt resource value: 0
 			public static int RatingView_scale = 0;

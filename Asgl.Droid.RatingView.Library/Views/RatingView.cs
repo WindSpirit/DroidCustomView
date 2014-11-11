@@ -1,3 +1,18 @@
+/*
+ * 
+ * NOTE: Attempted to use...
+ * 
+ *	 - TextView for "Not Applicable", but visuals were slightly off
+ *	 - CheckBox for "Requires Correction", but check-box styling was wrong
+ * 
+ *   Above resulted in the use of ImageView for all Rating items.
+ * 
+ * See also: 
+ * 
+ *   Google I/O 2013 - Writing Custom Views for Android 
+ *   https://www.youtube.com/watch?v=NYtB6mlu7vA#t=1286
+ * 
+ */
 
 
 using System;
@@ -22,36 +37,45 @@ namespace Asgl.Android.Views {
 		//   -2 = Not applicable
 		//   -1 = Not set
 		//    0 = False (thumbs down / fail);
-		//    1 = True (thumbs up / success); or, Rating of 1
+		//    1 = True (thumbs up / pass); or, Rating of 1
 		//    2..5 = Rating of 2..5
 
-		private const int InvalidLowValue = -3;
-		private const int MinimumRating = 0;
-		private const int TwoPointScale = 2;
+		private const int RatingBelowMinimum = -3;
+		private const int RatingNotApplicable = -2;
+		private const int RatingFail = 0;
+		private const int RatingPass = 1;
+
+		private const int BooleanScale = 2;
 
 		protected View GroupView;
 
-		protected ImageView Rating0 = null;
-		protected ImageView Rating1 = null;
-		protected ImageView Rating2 = null;
-		protected ImageView Rating3 = null;
-		protected ImageView Rating4 = null;
-
-		protected TextView NotApplicable = null;
-		protected ImageView CorrectionNeeded = null;
+		protected ImageView Rating0View = null;
+		protected ImageView Rating1View = null;
+		protected ImageView Rating2View = null;
+		protected ImageView Rating3View = null;
+		protected ImageView Rating4View = null;
+		protected ImageView NotApplicableView = null;
+		protected ImageView CorrectionNeededView = null;
 
 		protected Drawable ActnGood;
 		protected Drawable ActnBad;
 		protected Drawable ActnImportant;
 		protected Drawable ActnNotImportant;
+		protected Drawable ActnNotApplicable;
+		protected Drawable ActnCorrectionNeeded;
+		protected Drawable ActnCorrectionNotNeeded;
 
 		protected Color ColourDisabled;
 		protected Color ColourGood;
 		protected Color ColourBad;
 		protected Color ColourImportant;
 		protected Color ColourNotImportant;
+		protected Color ColourBlack;
+		protected Color ColourRed;
 
-		private bool _isUpdating = false;
+		protected bool IsInitialized = false;
+
+		#region --[ CTOR ]--
 
 		protected RatingView ( IntPtr javaReference, JniHandleOwnership transfer )
 			: base ( javaReference, transfer ) {
@@ -66,17 +90,29 @@ namespace Asgl.Android.Views {
 		public RatingView ( Context context, IAttributeSet attrs )
 			: base ( context, attrs ) {
 
-			OnCreateView ( );
-
 			var attrArray = Context.ObtainStyledAttributes ( attrs, Resource.Styleable.RatingView );
 
-			var tmpScale = attrArray.GetInteger ( Resource.Styleable.RatingView_scale, InvalidLowValue );
-			if ( tmpScale > InvalidLowValue ) Scale = tmpScale;
-
-			var tmpRating = attrArray.GetInteger ( Resource.Styleable.RatingView_rating, InvalidLowValue );
-			if ( tmpRating > InvalidLowValue ) Rating = tmpRating;
-
+			// ReadOnly attribute *MUST* be set prior to setting any click event listners.
+			// Otherwise you may not be able to remove the listeners and/or bubble the click events up to the parent.
 			ReadOnly = attrArray.GetBoolean ( Resource.Styleable.RatingView_readOnly, true );
+
+			// Set Requires Correction based on *.axml specified value
+			RequiresCorrectionVisible = attrArray.GetBoolean ( Resource.Styleable.RatingView_requiresCorrectionVisible, true );
+
+			OnCreateView ( );
+
+			// Set Scale based on *.axml specified value
+			var tmpScale = attrArray.GetInteger ( Resource.Styleable.RatingView_scale, RatingBelowMinimum );
+			if ( tmpScale > RatingBelowMinimum ) Scale = tmpScale;
+
+			// Set Rating based on *.axml specified value
+			var tmpRating = attrArray.GetInteger ( Resource.Styleable.RatingView_rating, RatingBelowMinimum );
+			if ( tmpRating > RatingBelowMinimum ) Rating = tmpRating;
+
+			// Set Not Applicable based on *.axml specified value (not that it actually makes sense to do so)
+			NotApplicable = attrArray.GetBoolean ( Resource.Styleable.RatingView_notApplicable, false );
+
+			// Set Requires Correction based on *.axml specified value
 			RequiresCorrection = attrArray.GetBoolean ( Resource.Styleable.RatingView_requiresCorrection, false );
 
 			attrArray.Recycle ( );
@@ -92,30 +128,43 @@ namespace Asgl.Android.Views {
 			InitDrawables ( );
 			InitControls ( GroupView );
 
-			SetClickListener(this);
+			IsInitialized = true;
 		}
+
+		#endregion
+
+		#region --[ Properties ]--
+
+		// For simplicity, ReadOnly must be turned off in AXML View markup.
+		// That is, ReadOnly condition cannot be changed after class constructor.
+		private bool _readOnly = true;
+		public bool ReadOnly {
+			get { return _readOnly; }
+			private set {
+				if ( _readOnly != value ) {
+					_readOnly = value;
+					if ( IsInitialized ) {
+						SetClickListener ( ReadOnly ? null : this );
+						if ( ReadOnlyChanged != null ) ReadOnlyChanged ( this, EventArgs.Empty );
+					}
+				}
+			}
+		}
+		public event EventHandler ReadOnlyChanged;
 
 		private int? _rating = null;
 		public int? Rating {
-			get
-			{
+			get {
 				return _rating;
 			}
 			set {
-				if ((value != null) && (value < -2 || value > 5)) throw new ArgumentOutOfRangeException();
-				if (_rating != value)
-				{
+				if ( ( value != null ) && ( value < -2 || value > 5 ) ) throw new ArgumentOutOfRangeException ( );
+				if ( _rating != value ) {
 					_rating = value;
-					_isUpdating = true;
-					try
-					{
-						Refresh();
-						if (RatingChanged != null)
-							RatingChanged(this, EventArgs.Empty);
-					}
-					finally
-					{
-						_isUpdating = false;
+					if ( IsInitialized ) {
+						Refresh ( );
+						if ( RatingChanged != null )
+							RatingChanged ( this, EventArgs.Empty );
 					}
 				}
 			}
@@ -126,48 +175,75 @@ namespace Asgl.Android.Views {
 		public int? Scale {
 			get { return _scale; }
 			set {
-				if ((value != null) && ( value < 2 || value > 5 )) throw new ArgumentOutOfRangeException ( );
-				if (_scale != value)
-				{
+				if ( ( value != null ) && ( value < 2 || value > 5 ) ) throw new ArgumentOutOfRangeException ( );
+				if ( _scale != value ) {
 					_scale = value;
-					_isUpdating = true;
-					try {
+					if ( IsInitialized ) {
 						Refresh ( );
 						if ( ScaleChanged != null )
 							ScaleChanged ( this, EventArgs.Empty );
-					} finally { _isUpdating = false; }
+					}
 				}
 			}
 		}
 		public event EventHandler ScaleChanged;
 
-		public bool ReadOnly { get; set; }
+		public bool NotApplicable {
+			get { return ( Rating == RatingNotApplicable ); }
+			set {
+				if ( ( Rating == RatingNotApplicable ) != value ) {
+					Rating = ( value ) ? ( int? ) RatingNotApplicable : null;
+					if ( IsInitialized ) {
+						if ( NotApplicableChanged != null )
+							NotApplicableChanged ( this, EventArgs.Empty );
+					}
+				}
+			}
+		}
+		public event EventHandler NotApplicableChanged;
+
+		private bool _requiresCorrectionVisible;
+		public bool RequiresCorrectionVisible {
+			get { return _requiresCorrectionVisible; }
+			set {
+				if ( _requiresCorrectionVisible != value ) {
+					_requiresCorrectionVisible = value;
+					if ( IsInitialized ) {
+						if ( RequiresCorrectionVisibleChanged != null )
+							RequiresCorrectionVisibleChanged ( this, EventArgs.Empty );
+					}
+				}
+			}
+		}
+		public event EventHandler RequiresCorrectionVisibleChanged;
 
 		private bool _requiresCorrection;
-		public bool RequiresCorrection
-		{
+		public bool RequiresCorrection {
 			get { return _requiresCorrection; }
-			set
-			{
-				if ( _requiresCorrection != value )
-				{
+			set {
+				if ( _requiresCorrection != value ) {
 					_requiresCorrection = value;
-					if (RequiresCorrectionChanged != null)
-						RequiresCorrectionChanged(this, EventArgs.Empty);
+					if ( IsInitialized ) {
+						if ( RequiresCorrectionChanged != null )
+							RequiresCorrectionChanged ( this, EventArgs.Empty );
+					}
 				}
 			}
 		}
 		public event EventHandler RequiresCorrectionChanged;
 
+		#endregion
+
 		#region -[ Init ]-
 
-		protected void InitColour()
-		{
+		protected void InitColour ( ) {
 			ColourDisabled = Resources.GetColor ( Resource.Color.colourDisabled );
 			ColourGood = Resources.GetColor ( Resource.Color.colourGood );
 			ColourBad = Resources.GetColor ( Resource.Color.colourBad );
 			ColourImportant = Resources.GetColor ( Resource.Color.colourImportant );
 			ColourNotImportant = Resources.GetColor ( Resource.Color.colourNotImportant );
+			ColourBlack = Resources.GetColor ( Resource.Color.black );
+			ColourRed = Resources.GetColor ( Resource.Color.red );
 		}
 
 		protected void InitDrawables ( ) {
@@ -175,146 +251,191 @@ namespace Asgl.Android.Views {
 			ActnBad = Resources.GetDrawable ( Resource.Drawable.ic_action_bad );
 			ActnImportant = Resources.GetDrawable ( Resource.Drawable.ic_action_important );
 			ActnNotImportant = Resources.GetDrawable ( Resource.Drawable.ic_action_not_important );
+			ActnNotApplicable = Resources.GetDrawable ( Resource.Drawable.ic_not_applicable );
+			ActnCorrectionNeeded = Resources.GetDrawable ( Resource.Drawable.ic_is_checked );
+			ActnCorrectionNotNeeded = Resources.GetDrawable ( Resource.Drawable.ic_not_checked );
 		}
 
-		protected void SetClickListener ( View.IOnClickListener listner ) {
+		protected void SetClickListener ( View.IOnClickListener listener ) {
 			// Passing in null will clear listners
-			Rating0.SetOnClickListener ( listner );
-			Rating1.SetOnClickListener ( listner );
-			Rating2.SetOnClickListener ( listner );
-			Rating3.SetOnClickListener ( listner );
-			Rating4.SetOnClickListener ( listner );
-			NotApplicable.SetOnClickListener ( listner );
-			CorrectionNeeded.SetOnClickListener ( listner );
+			Rating0View.SetOnClickListener ( listener );
+			Rating1View.SetOnClickListener ( listener );
+			Rating2View.SetOnClickListener ( listener );
+			Rating3View.SetOnClickListener ( listener );
+			Rating4View.SetOnClickListener ( listener );
+			CorrectionNeededView.SetOnClickListener ( listener );
+			NotApplicableView.SetOnClickListener ( listener );
 		}
 
 		protected void InitControls ( View rootView ) {
-			Rating0 = rootView.FindViewById<ImageView> ( Resource.Id.rating0 );
-			Rating1 = rootView.FindViewById<ImageView> ( Resource.Id.rating1 );
-			Rating2 = rootView.FindViewById<ImageView> ( Resource.Id.rating2 );
-			Rating3 = rootView.FindViewById<ImageView> ( Resource.Id.rating3 );
-			Rating4 = rootView.FindViewById<ImageView> ( Resource.Id.rating4 );
-			NotApplicable = rootView.FindViewById<TextView> ( Resource.Id.not_applicable );
-			CorrectionNeeded = rootView.FindViewById<ImageView> ( Resource.Id.req_correction );
+			Rating0View = rootView.FindViewById<ImageView> ( Resource.Id.rating0 );
+			Rating1View = rootView.FindViewById<ImageView> ( Resource.Id.rating1 );
+			Rating2View = rootView.FindViewById<ImageView> ( Resource.Id.rating2 );
+			Rating3View = rootView.FindViewById<ImageView> ( Resource.Id.rating3 );
+			Rating4View = rootView.FindViewById<ImageView> ( Resource.Id.rating4 );
+			NotApplicableView = rootView.FindViewById<ImageView> ( Resource.Id.not_applicable );
+			CorrectionNeededView = rootView.FindViewById<ImageView> ( Resource.Id.req_correction );
 		}
 
-		protected void SetVisibility ( )
-		{
+		protected void SetVisibility ( ) {
 			var testValue = Scale ?? 0;
-			Rating0.Visibility = (testValue > 0) ? ViewStates.Visible : ViewStates.Gone;
-			Rating1.Visibility = (testValue > 0) ? ViewStates.Visible : ViewStates.Gone;
-			Rating2.Visibility = (testValue > 2) ? ViewStates.Visible : ViewStates.Gone;
-			Rating3.Visibility = (testValue > 3) ? ViewStates.Visible : ViewStates.Gone;
-			Rating4.Visibility = (testValue > 4) ? ViewStates.Visible : ViewStates.Gone;
+			Rating0View.Visibility = ( testValue > 0 ) ? ViewStates.Visible : ViewStates.Gone;
+			Rating1View.Visibility = ( testValue > 0 ) ? ViewStates.Visible : ViewStates.Gone;
+			Rating2View.Visibility = ( testValue > 2 ) ? ViewStates.Visible : ViewStates.Gone;
+			Rating3View.Visibility = ( testValue > 3 ) ? ViewStates.Visible : ViewStates.Gone;
+			Rating4View.Visibility = ( testValue > 4 ) ? ViewStates.Visible : ViewStates.Gone;
+			NotApplicableView.Visibility = ViewStates.Visible;
+			CorrectionNeededView.Visibility = ( RequiresCorrectionVisible ) ? ViewStates.Visible : ViewStates.Gone;
 		}
 
 		#endregion
 
-		protected override bool DrawChild(Canvas canvas, View child, long drawingTime)
-		{
+		protected override bool DrawChild ( Canvas canvas, View child, long drawingTime ) {
 			// Not sure where the "child" came from, but we need to update it
 			// to reflect the information and states in "this" View instance.
 
 			// Establish references to the Views that we want to update
-			InitControls(child);
+			InitControls ( child );
 
 			// Update those Views
-			Refresh();
+			Refresh ( );
 
 			// Let DrawChild do its thing now that we have sync'd the GroupView's
-			return base.DrawChild(canvas, child, drawingTime);
+			return base.DrawChild ( canvas, child, drawingTime );
 		}
 
-		protected void Refresh ( )
-		{
-			ClearImages();
+
+		protected void DrawCommonEnablement ( bool isSet ) {
+			NotApplicableView.Enabled = ( !ReadOnly );
+			CorrectionNeededView.Enabled = ( !ReadOnly );
+
+			// Determine correct image to be displayed
+			var correctionDrawable = RequiresCorrection ? ActnCorrectionNeeded : ActnCorrectionNotNeeded;
+
+			if ( isSet ) {
+				ActnNotApplicable.SetColorFilter ( NotApplicable ? ColourBlack : ColourDisabled, PorterDuff.Mode.SrcIn );
+				correctionDrawable.SetColorFilter ( RequiresCorrection ? ColourRed : ColourDisabled, PorterDuff.Mode.SrcIn );
+			} else {
+				ActnNotApplicable.SetColorFilter ( ColourDisabled, PorterDuff.Mode.SrcIn );
+				correctionDrawable.SetColorFilter ( ColourDisabled, PorterDuff.Mode.SrcIn );
+			}
+
+			NotApplicableView.SetImageDrawable ( ActnNotApplicable );
+
+			if ( RequiresCorrectionVisible )
+				CorrectionNeededView.SetImageDrawable ( correctionDrawable );
+		}
+		protected void DrawBooleanScaleDisabled ( ) {
+			ActnGood.SetColorFilter ( ColourDisabled, PorterDuff.Mode.SrcIn );
+			ActnBad.SetColorFilter ( ColourDisabled, PorterDuff.Mode.SrcIn );
+			Rating0View.SetImageDrawable ( ActnGood );
+			Rating1View.SetImageDrawable ( ActnBad );
+			DrawCommonEnablement ( false );
+		}
+		protected void DrawMultiScaleDisabled ( ) {
+			ActnNotImportant.SetColorFilter ( ColourDisabled, PorterDuff.Mode.SrcIn );
+			Rating0View.SetImageDrawable ( ActnNotImportant );
+			Rating1View.SetImageDrawable ( ActnNotImportant );
+			Rating2View.SetImageDrawable ( ActnNotImportant );
+			Rating3View.SetImageDrawable ( ActnNotImportant );
+			Rating4View.SetImageDrawable ( ActnNotImportant );
+			DrawCommonEnablement ( false );
+		}
+
+		protected void DrawBooleanScaleEnabled ( ) {
+			ActnGood.SetColorFilter ( ( Rating == RatingPass ) ? ColourGood : ColourDisabled, PorterDuff.Mode.SrcIn );
+			Rating0View.SetImageDrawable ( ActnGood );
+
+			ActnBad.SetColorFilter ( ( Rating == RatingFail ) ? ColourBad : ColourDisabled, PorterDuff.Mode.SrcIn );
+			Rating1View.SetImageDrawable ( ActnBad );
+
+			DrawCommonEnablement ( true );
+		}
+		protected void DrawMultiScaleEnabled ( ) {
+			ActnNotImportant.SetColorFilter ( ColourNotImportant, PorterDuff.Mode.SrcIn );
+			ActnImportant.SetColorFilter ( ColourImportant, PorterDuff.Mode.SrcIn );
+
+			Rating0View.SetImageDrawable ( ActnNotImportant );
+			Rating1View.SetImageDrawable ( ActnNotImportant );
+			Rating2View.SetImageDrawable ( ActnNotImportant );
+			Rating3View.SetImageDrawable ( ActnNotImportant );
+			Rating4View.SetImageDrawable ( ActnNotImportant );
+
+			if ( Rating > 4 ) Rating4View.SetImageDrawable ( ActnImportant );
+			if ( Rating > 3 ) Rating3View.SetImageDrawable ( ActnImportant );
+			if ( Rating > 2 ) Rating2View.SetImageDrawable ( ActnImportant );
+			if ( Rating > 1 ) Rating1View.SetImageDrawable ( ActnImportant );
+			if ( Rating > 0 ) Rating0View.SetImageDrawable ( ActnImportant );
+
+			DrawCommonEnablement ( true );
+		}
+
+		protected void Refresh ( ) {
+
+			ClearImages ( );
 			SetVisibility ( );
 
 			// If you don't know the scale, you don't know what to render
-			if (Scale != null)
-			{
-				if (Rating < MinimumRating)
-				{
-					// Rating has not been established yet
-					if (Scale == TwoPointScale)
-					{
-						ActnGood.SetColorFilter(ColourDisabled, PorterDuff.Mode.SrcIn);
-						ActnBad.SetColorFilter(ColourDisabled, PorterDuff.Mode.SrcIn);
-						Rating0.SetImageDrawable(ActnGood);
-						Rating1.SetImageDrawable(ActnBad);
-					}
-					else
-					{
-						ActnNotImportant.SetColorFilter(ColourDisabled, PorterDuff.Mode.SrcIn);
-						Rating0.SetImageDrawable(ActnNotImportant);
-						Rating1.SetImageDrawable(ActnNotImportant);
-						Rating2.SetImageDrawable(ActnNotImportant);
-						Rating3.SetImageDrawable(ActnNotImportant);
-						Rating4.SetImageDrawable(ActnNotImportant);
-					}
-				}
-				else
-				{
-					if (Scale == TwoPointScale)
-					{
-						ActnGood.SetColorFilter((Rating > 0) ? ColourGood : ColourDisabled, PorterDuff.Mode.SrcIn);
-						Rating0.SetImageDrawable(ActnGood);
-
-						ActnBad.SetColorFilter((Rating > 0) ? ColourDisabled : ColourBad, PorterDuff.Mode.SrcIn);
-						Rating1.SetImageDrawable(ActnBad);
-					}
-					else
-					{
-						ActnNotImportant.SetColorFilter(ColourNotImportant, PorterDuff.Mode.SrcIn);
-						ActnImportant.SetColorFilter(ColourImportant, PorterDuff.Mode.SrcIn);
-
-						Rating0.SetImageDrawable(ActnNotImportant);
-						Rating1.SetImageDrawable(ActnNotImportant);
-						Rating2.SetImageDrawable(ActnNotImportant);
-						Rating3.SetImageDrawable(ActnNotImportant);
-						Rating4.SetImageDrawable(ActnNotImportant);
-
-						if (Rating > 4) Rating4.SetImageDrawable(ActnImportant);
-						if (Rating > 3) Rating3.SetImageDrawable(ActnImportant);
-						if (Rating > 2) Rating2.SetImageDrawable(ActnImportant);
-						if (Rating > 1) Rating1.SetImageDrawable(ActnImportant);
-						if (Rating > 0) Rating0.SetImageDrawable(ActnImportant);
-					}
+			if ( Scale != null ) {
+				if ( Rating == null ) {
+					if ( Scale == BooleanScale ) DrawBooleanScaleDisabled ( );
+					else DrawMultiScaleDisabled ( );
+				} else {
+					if ( Scale == BooleanScale ) DrawBooleanScaleEnabled ( );
+					else DrawMultiScaleEnabled ( );
 				}
 			}
 		}
 
-		public void OnClick(View v)
-		{
-			// TODO: CAZ - Implement for production..
-			// if (! ReadOnly)
-			// {
-			if (v == Rating0) { Rating = 1; }
-			else if (v == Rating1) { Rating = (Scale == 2) ? 0 : 2; }
-			else if (v == Rating2) { Rating = 3; }
-			else if (v == Rating3) { Rating = 4; }
-			else if (v == Rating4) { Rating = 5; }
-			else if (v == NotApplicable) { Rating = -2; }
-			else if (v == CorrectionNeeded) { RequiresCorrection = (! RequiresCorrection); }
-			// }
+		public void OnClick ( View v ) {
+			// Set Rating based on View that was clicked on
+			if ( v == Rating0View ) { Rating = ( Scale == BooleanScale ) ? RatingPass : 1; } else if ( v == Rating1View ) { Rating = ( Scale == BooleanScale ) ? RatingFail : 2; } else if ( v == Rating2View ) { Rating = 3; } else if ( v == Rating3View ) { Rating = 4; } else if ( v == Rating4View ) { Rating = 5; } else if ( v == NotApplicableView ) { Rating = RatingNotApplicable; } else if ( v == CorrectionNeededView ) { RequiresCorrection = ( !RequiresCorrection ); }
 		}
 
 		protected void ClearImages ( ) {
 			// Clears previously set images
-			Rating0.SetImageDrawable ( null );
-			Rating1.SetImageDrawable ( null );
-			Rating2.SetImageDrawable ( null );
-			Rating3.SetImageDrawable ( null );
-			Rating4.SetImageDrawable ( null );
+			Rating0View.SetImageDrawable ( null );
+			Rating1View.SetImageDrawable ( null );
+			Rating2View.SetImageDrawable ( null );
+			Rating3View.SetImageDrawable ( null );
+			Rating4View.SetImageDrawable ( null );
+			NotApplicableView.SetImageDrawable ( null );
+			CorrectionNeededView.SetImageDrawable ( null );
 		}
 
-		void IDisposable.Dispose()
-		{
-			ClearImages();
-			SetClickListener(null);
-			Dispose();
+
+		protected override void OnAttachedToWindow ( ) {
+			// Google I/O 2013 - Writing Custom Views for Android 
+			// https://www.youtube.com/watch?v=NYtB6mlu7vA#t=1286
+
+			// Call super.onAttachedToWindow()!
+			base.OnAttachedToWindow ( );
+
+			// Perform any relevant state resets
+
+			// Start listening for state changes
+			// If you set the Listner to null, events (e.g. Click), will not bubble-up!
+			if ( !ReadOnly ) SetClickListener ( this );
 		}
 
+
+		protected override void OnDetachedFromWindow ( ) {
+			// Google I/O 2013 - Writing Custom Views for Android 
+			// https://www.youtube.com/watch?v=NYtB6mlu7vA#t=1286
+
+			// Call super.onDetachedFromWindow()!
+			base.OnDetachedFromWindow ( );
+
+			// Remove any posted Runnables
+
+			// Stop listening for data (s/b state) changes
+			SetClickListener ( null );
+
+			// Clean up resources:
+			// - Bitmaps
+			// - Threads
+			ClearImages ( );
+		}
 	}
 }
 

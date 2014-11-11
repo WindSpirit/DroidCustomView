@@ -26,19 +26,27 @@ namespace Alpha.Droid
 		
 		public static void UpdateIdValues()
 		{
+			global::Asgl.Droid.RatingView.Library.Resource.Attribute.notApplicable = global::Alpha.Droid.Resource.Attribute.notApplicable;
 			global::Asgl.Droid.RatingView.Library.Resource.Attribute.rating = global::Alpha.Droid.Resource.Attribute.rating;
 			global::Asgl.Droid.RatingView.Library.Resource.Attribute.readOnly = global::Alpha.Droid.Resource.Attribute.readOnly;
 			global::Asgl.Droid.RatingView.Library.Resource.Attribute.requiresCorrection = global::Alpha.Droid.Resource.Attribute.requiresCorrection;
+			global::Asgl.Droid.RatingView.Library.Resource.Attribute.requiresCorrectionVisible = global::Alpha.Droid.Resource.Attribute.requiresCorrectionVisible;
 			global::Asgl.Droid.RatingView.Library.Resource.Attribute.scale = global::Alpha.Droid.Resource.Attribute.scale;
+			global::Asgl.Droid.RatingView.Library.Resource.Color.black = global::Alpha.Droid.Resource.Color.black;
 			global::Asgl.Droid.RatingView.Library.Resource.Color.colourBad = global::Alpha.Droid.Resource.Color.colourBad;
 			global::Asgl.Droid.RatingView.Library.Resource.Color.colourDisabled = global::Alpha.Droid.Resource.Color.colourDisabled;
 			global::Asgl.Droid.RatingView.Library.Resource.Color.colourGood = global::Alpha.Droid.Resource.Color.colourGood;
 			global::Asgl.Droid.RatingView.Library.Resource.Color.colourImportant = global::Alpha.Droid.Resource.Color.colourImportant;
 			global::Asgl.Droid.RatingView.Library.Resource.Color.colourNotImportant = global::Alpha.Droid.Resource.Color.colourNotImportant;
+			global::Asgl.Droid.RatingView.Library.Resource.Color.red = global::Alpha.Droid.Resource.Color.red;
 			global::Asgl.Droid.RatingView.Library.Resource.Drawable.ic_action_bad = global::Alpha.Droid.Resource.Drawable.ic_action_bad;
 			global::Asgl.Droid.RatingView.Library.Resource.Drawable.ic_action_good = global::Alpha.Droid.Resource.Drawable.ic_action_good;
 			global::Asgl.Droid.RatingView.Library.Resource.Drawable.ic_action_important = global::Alpha.Droid.Resource.Drawable.ic_action_important;
 			global::Asgl.Droid.RatingView.Library.Resource.Drawable.ic_action_not_important = global::Alpha.Droid.Resource.Drawable.ic_action_not_important;
+			global::Asgl.Droid.RatingView.Library.Resource.Drawable.ic_is_checked = global::Alpha.Droid.Resource.Drawable.ic_is_checked;
+			global::Asgl.Droid.RatingView.Library.Resource.Drawable.ic_not_applicable = global::Alpha.Droid.Resource.Drawable.ic_not_applicable;
+			global::Asgl.Droid.RatingView.Library.Resource.Drawable.ic_not_checked = global::Alpha.Droid.Resource.Drawable.ic_not_checked;
+			global::Asgl.Droid.RatingView.Library.Resource.Drawable.oval_background = global::Alpha.Droid.Resource.Drawable.oval_background;
 			global::Asgl.Droid.RatingView.Library.Resource.Id.not_applicable = global::Alpha.Droid.Resource.Id.not_applicable;
 			global::Asgl.Droid.RatingView.Library.Resource.Id.rating0 = global::Alpha.Droid.Resource.Id.rating0;
 			global::Asgl.Droid.RatingView.Library.Resource.Id.rating1 = global::Alpha.Droid.Resource.Id.rating1;
@@ -51,9 +59,11 @@ namespace Alpha.Droid
 			global::Asgl.Droid.RatingView.Library.Resource.String.ApplicationName = global::Alpha.Droid.Resource.String.ApplicationName;
 			global::Asgl.Droid.RatingView.Library.Resource.String.Hello = global::Alpha.Droid.Resource.String.Hello;
 			global::Asgl.Droid.RatingView.Library.Resource.Styleable.RatingView = global::Alpha.Droid.Resource.Styleable.RatingView;
+			global::Asgl.Droid.RatingView.Library.Resource.Styleable.RatingView_notApplicable = global::Alpha.Droid.Resource.Styleable.RatingView_notApplicable;
 			global::Asgl.Droid.RatingView.Library.Resource.Styleable.RatingView_rating = global::Alpha.Droid.Resource.Styleable.RatingView_rating;
 			global::Asgl.Droid.RatingView.Library.Resource.Styleable.RatingView_readOnly = global::Alpha.Droid.Resource.Styleable.RatingView_readOnly;
 			global::Asgl.Droid.RatingView.Library.Resource.Styleable.RatingView_requiresCorrection = global::Alpha.Droid.Resource.Styleable.RatingView_requiresCorrection;
+			global::Asgl.Droid.RatingView.Library.Resource.Styleable.RatingView_requiresCorrectionVisible = global::Alpha.Droid.Resource.Styleable.RatingView_requiresCorrectionVisible;
 			global::Asgl.Droid.RatingView.Library.Resource.Styleable.RatingView_scale = global::Alpha.Droid.Resource.Styleable.RatingView_scale;
 		}
 		
@@ -91,23 +101,23 @@ namespace Alpha.Droid
 		public partial class Attribute
 		{
 			
-			// aapt resource value: 0x7f01007e
-			public const int MvxBind = 2130772094;
+			// aapt resource value: 0x7f010080
+			public const int MvxBind = 2130772096;
 			
-			// aapt resource value: 0x7f010082
-			public const int MvxDropDownItemTemplate = 2130772098;
-			
-			// aapt resource value: 0x7f010081
-			public const int MvxItemTemplate = 2130772097;
-			
-			// aapt resource value: 0x7f01007f
-			public const int MvxLang = 2130772095;
+			// aapt resource value: 0x7f010084
+			public const int MvxDropDownItemTemplate = 2130772100;
 			
 			// aapt resource value: 0x7f010083
-			public const int MvxSource = 2130772099;
+			public const int MvxItemTemplate = 2130772099;
 			
-			// aapt resource value: 0x7f010080
-			public const int MvxTemplate = 2130772096;
+			// aapt resource value: 0x7f010081
+			public const int MvxLang = 2130772097;
+			
+			// aapt resource value: 0x7f010085
+			public const int MvxSource = 2130772101;
+			
+			// aapt resource value: 0x7f010082
+			public const int MvxTemplate = 2130772098;
 			
 			// aapt resource value: 0x7f01001b
 			public const int actionBarDivider = 2130771995;
@@ -325,6 +335,9 @@ namespace Alpha.Droid
 			// aapt resource value: 0x7f010033
 			public const int navigationMode = 2130772019;
 			
+			// aapt resource value: 0x7f01007d
+			public const int notApplicable = 2130772093;
+			
 			// aapt resource value: 0x7f010000
 			public const int orientation = 2130771968;
 			
@@ -364,8 +377,11 @@ namespace Alpha.Droid
 			// aapt resource value: 0x7f01007c
 			public const int readOnly = 2130772092;
 			
-			// aapt resource value: 0x7f01007d
-			public const int requiresCorrection = 2130772093;
+			// aapt resource value: 0x7f01007f
+			public const int requiresCorrection = 2130772095;
+			
+			// aapt resource value: 0x7f01007e
+			public const int requiresCorrectionVisible = 2130772094;
 			
 			// aapt resource value: 0x7f010001
 			public const int rowCount = 2130771969;
@@ -531,8 +547,8 @@ namespace Alpha.Droid
 		public partial class Color
 		{
 			
-			// aapt resource value: 0x7f080008
-			public const int abc_search_url_text_holo = 2131230728;
+			// aapt resource value: 0x7f08000a
+			public const int abc_search_url_text_holo = 2131230730;
 			
 			// aapt resource value: 0x7f080000
 			public const int abc_search_url_text_normal = 2131230720;
@@ -542,6 +558,9 @@ namespace Alpha.Droid
 			
 			// aapt resource value: 0x7f080001
 			public const int abc_search_url_text_selected = 2131230721;
+			
+			// aapt resource value: 0x7f080008
+			public const int black = 2131230728;
 			
 			// aapt resource value: 0x7f080004
 			public const int colourBad = 2131230724;
@@ -557,6 +576,9 @@ namespace Alpha.Droid
 			
 			// aapt resource value: 0x7f080007
 			public const int colourNotImportant = 2131230727;
+			
+			// aapt resource value: 0x7f080009
+			public const int red = 2131230729;
 			
 			static Color()
 			{
@@ -924,10 +946,22 @@ namespace Alpha.Droid
 			public const int ic_action_not_important = 2130837594;
 			
 			// aapt resource value: 0x7f02005b
-			public const int Icon = 2130837595;
+			public const int ic_is_checked = 2130837595;
 			
 			// aapt resource value: 0x7f02005c
-			public const int splash = 2130837596;
+			public const int ic_not_applicable = 2130837596;
+			
+			// aapt resource value: 0x7f02005d
+			public const int ic_not_checked = 2130837597;
+			
+			// aapt resource value: 0x7f02005e
+			public const int Icon = 2130837598;
+			
+			// aapt resource value: 0x7f02005f
+			public const int oval_background = 2130837599;
+			
+			// aapt resource value: 0x7f020060
+			public const int splash = 2130837600;
 			
 			static Drawable()
 			{
@@ -2235,8 +2269,8 @@ namespace Alpha.Droid
 			public const int MenuView_android_windowAnimationStyle = 0;
 			
 			public static int[] MvxBinding = new int[] {
-					2130772094,
-					2130772095};
+					2130772096,
+					2130772097};
 			
 			// aapt resource value: 0
 			public const int MvxBinding_MvxBind = 0;
@@ -2245,20 +2279,20 @@ namespace Alpha.Droid
 			public const int MvxBinding_MvxLang = 1;
 			
 			public static int[] MvxControl = new int[] {
-					2130772096};
+					2130772098};
 			
 			// aapt resource value: 0
 			public const int MvxControl_MvxTemplate = 0;
 			
 			public static int[] MvxImageView = new int[] {
-					2130772099};
+					2130772101};
 			
 			// aapt resource value: 0
 			public const int MvxImageView_MvxSource = 0;
 			
 			public static int[] MvxListView = new int[] {
-					2130772097,
-					2130772098};
+					2130772099,
+					2130772100};
 			
 			// aapt resource value: 1
 			public const int MvxListView_MvxDropDownItemTemplate = 1;
@@ -2270,7 +2304,12 @@ namespace Alpha.Droid
 					2130772090,
 					2130772091,
 					2130772092,
-					2130772093};
+					2130772093,
+					2130772094,
+					2130772095};
+			
+			// aapt resource value: 3
+			public const int RatingView_notApplicable = 3;
 			
 			// aapt resource value: 1
 			public const int RatingView_rating = 1;
@@ -2278,8 +2317,11 @@ namespace Alpha.Droid
 			// aapt resource value: 2
 			public const int RatingView_readOnly = 2;
 			
-			// aapt resource value: 3
-			public const int RatingView_requiresCorrection = 3;
+			// aapt resource value: 5
+			public const int RatingView_requiresCorrection = 5;
+			
+			// aapt resource value: 4
+			public const int RatingView_requiresCorrectionVisible = 4;
 			
 			// aapt resource value: 0
 			public const int RatingView_scale = 0;

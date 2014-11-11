@@ -25,20 +25,15 @@
             android:layout_height="40dp" />
         <ImageView
             android:id="@+id/rating4"
-            android:visibility="gone"
             android:layout_width="40dp"
             android:layout_height="40dp" />
-        <TextView
+        <ImageView
             android:id="@+id/not_applicable"
             android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:gravity="center"
-            android:textSize="10sp"
-            android:text="N/A" />
+            android:layout_height="40dp" />
         <ImageView
             android:id="@+id/req_correction"
             android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:gravity="center" />
+            android:layout_height="40dp" />
     </TableRow>
 </TableLayout>
